@@ -25,6 +25,7 @@ let persons =
     }
   ]
 
+app.use(express.json())
 
 app.get('/api/persons', (req, res) => {
     res.json(persons)
@@ -43,6 +44,21 @@ app.delete('/api/persons/:id', (req, res) => {
     console.log(id)
     persons = persons.filter(actual => actual.id !== Number(id))
     res.status(204).end()
+})
+
+app.post('/api/persons', (req, res) => {
+    const body = req.body
+    const name = body.name
+    const number = body.number
+    const id = Math.floor((Math.random() * 50000))
+    const newObject = {
+        name: name,
+        number: number,
+        id: id
+    }
+    console.log(newObject)
+    persons.push(newObject)
+    res.status(201).end()
 })
 
 app.get('/info', (req, res) => {
