@@ -30,6 +30,14 @@ app.get('/api/persons', (req, res) => {
     res.json(persons)
 })
 
+app.get('/api/persons/:id', (req, res) => {
+    const id = req.params.id
+    console.log(id)
+    const person = persons.find(actual => actual.id === Number(id))
+    console.log(person)
+    person === undefined ? res.status(404).end() : res.status(200).json(person)
+})
+
 app.get('/info', (req, res) => {
     const number = persons.length
     const date = new Date()
