@@ -50,6 +50,12 @@ app.post('/api/persons', (req, res) => {
     const body = req.body
     const name = body.name
     const number = body.number
+    const exist = persons.some(e => e.name === name)
+    if (name === undefined || number === undefined) {
+      res.status(400).json({error: 'Name or Number not defined'})
+    } else if (exist) {
+      res.status(400).json({error: 'name must be unique' })
+    } else {
     const id = Math.floor((Math.random() * 50000))
     const newObject = {
         name: name,
@@ -58,7 +64,9 @@ app.post('/api/persons', (req, res) => {
     }
     console.log(newObject)
     persons.push(newObject)
-    res.status(201).end()
+    res.status(201).json(newObject)
+    }
+
 })
 
 app.get('/info', (req, res) => {
