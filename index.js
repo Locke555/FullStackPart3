@@ -1,5 +1,7 @@
+require('dotenv').config()
 express = require('express');
 app = express();
+const Person = require('./models/person');
 var morgan = require('morgan')
 
 let persons = 
@@ -34,14 +36,15 @@ app.use(express.json())
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 app.use(express.static('dist'))
 
-app.get('/api/persons', (req, res) => {
-    res.json(persons)
+app.get('/api/persons', async (req, res) => {
+    const Persons = await Person.find()
+    res.json(Persons)
 })
 
-app.get('/api/persons/:id', (req, res) => {
+app.get('/api/persons/:id', async (req, res) => {
     const id = req.params.id
     console.log(id)
-    const person = persons.find(actual => actual.id === Number(id))
+    const person =  await Person.findById(id)
     console.log(person)
     person === undefined ? res.status(404).end() : res.status(200).json(person)
 })
@@ -76,10 +79,10 @@ app.post('/api/persons', (req, res) => {
 
 })
 
-app.get('/info', (req, res) => {
-    const number = persons.length
+app.get('/info', async (req, res) => {
+    const number = await Person.find()
     const date = new Date()
-    const html = `<p>Phonebook has info for ${number} people</p> <p>${date}</p>`
+    const html = `<p>Phonebook has info for ${number.length} people</p> <p>${date}</p>`
     res.status(200).send(html)
 })
 
