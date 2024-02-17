@@ -52,28 +52,26 @@ app.get('/api/persons/:id', async (req, res) => {
 app.delete('/api/persons/:id', (req, res) => {
     const id = req.params.id
     console.log(id)
-    persons = persons.filter(actual => actual.id !== Number(id))
+    persons = Person.deleteOne({_id: id})
     res.status(204).end()
 })
 
-app.post('/api/persons', (req, res) => {
+app.post('/api/persons', async (req, res) => {
     const body = req.body
     const name = body.name
     const number = body.number
-    const exist = persons.some(e => e.name === name)
+    const exist = await Person.findOne({name: name})
     if (name === undefined || number === undefined) {
       res.status(400).json({error: 'Name or Number not defined'})
     } else if (exist) {
       res.status(400).json({error: 'name must be unique' })
     } else {
-    const id = Math.floor((Math.random() * 50000))
-    const newObject = {
-        name: name,
-        number: number,
-        id: id
-    }
+    const newObject = new Person({
+      name: name,
+      number: number
+    })
+    await newObject.save()
     console.log(newObject)
-    persons.push(newObject)
     res.status(201).json(newObject)
     }
 
