@@ -49,10 +49,10 @@ app.get('/api/persons/:id', async (req, res) => {
     person === undefined ? res.status(404).end() : res.status(200).json(person)
 })
 
-app.delete('/api/persons/:id', (req, res) => {
+app.delete('/api/persons/:id', async (req, res) => {
     const id = req.params.id
     console.log(id)
-    persons = Person.deleteOne({_id: id})
+    persons = await Person.deleteOne({_id: id})
     res.status(204).end()
 })
 
