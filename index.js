@@ -45,7 +45,7 @@ app.get('/api/persons', async (req, res, next) => {
   }
 })
 
-app.get('/api/persons/:id', async (req, res, error) => {
+app.get('/api/persons/:id', async (req, res, next) => {
   try {
     const id = req.params.id
     console.log(id)
@@ -57,14 +57,31 @@ app.get('/api/persons/:id', async (req, res, error) => {
   }
 })
 
-app.delete('/api/persons/:id', async (req, res) => {
+app.put('/api/persons/:id', async (req, res, next) => {
+  try {
+  const id = req.params.id
+  await Person.findByIdAndUpdate(id, req.body)
+  const newObject = await Person.findById(id)
+  res.status(200).json(newObject)
+  } catch (error) {
+    next(error)
+  }
+
+})
+
+app.delete('/api/persons/:id', async (req, res, next) => {
+  try {
     const id = req.params.id
     console.log(id)
     persons = await Person.deleteOne({_id: id})
     res.status(204).end()
+  } catch (error) {
+    next(error)
+  }
 })
 
-app.post('/api/persons', async (req, res) => {
+app.post('/api/persons', async (req, res, next) => {
+  try {
     const body = req.body
     const name = body.name
     const number = body.number
@@ -82,14 +99,21 @@ app.post('/api/persons', async (req, res) => {
     console.log(newObject)
     res.status(201).json(newObject)
     }
+  } catch (error) {
+    next(error)
+  }
 
 })
 
-app.get('/info', async (req, res) => {
+app.get('/info', async (req, res, next) => {
+  try {
     const number = await Person.find()
     const date = new Date()
     const html = `<p>Phonebook has info for ${number.length} people</p> <p>${date}</p>`
     res.status(200).send(html)
+  } catch (error) {
+    next(error)
+  }
 })
 
 const errorHandler = (error, req, res, next) => {
